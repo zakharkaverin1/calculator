@@ -1,3 +1,4 @@
+// ast.go
 package application
 
 import (
@@ -8,27 +9,11 @@ import (
 )
 
 type ASTNode struct {
-	IsLeaf        bool
-	Value         float64
-	Operator      string
-	Left, Right   *ASTNode
-	TaskScheduled bool
-}
-
-func ParseAST(expression string) (*ASTNode, error) {
-	expr := strings.ReplaceAll(expression, " ", "")
-	if expr == "" {
-		return nil, fmt.Errorf("пустое")
-	}
-	p := &parser{input: expr, pos: 0}
-	node, err := p.parseExpression()
-	if err != nil {
-		return nil, err
-	}
-	if p.pos < len(p.input) {
-		return nil, fmt.Errorf("неизвестный токен на позиции ", p.pos)
-	}
-	return node, nil
+	IsLeaf   bool
+	Value    float64
+	Operator string
+	Left     *ASTNode
+	Right    *ASTNode
 }
 
 type parser struct {
@@ -36,107 +21,99 @@ type parser struct {
 	pos   int
 }
 
-func (p *parser) peek() rune {
-	if p.pos < len(p.input) {
-		return rune(p.input[p.pos])
+func ParseAST(expr string) (*ASTNode, error) {
+	expr = strings.ReplaceAll(expr, " ", "")
+	if expr == "" {
+		return nil, fmt.Errorf("пустое выражение")
 	}
-	return 0
-}
 
-func (p *parser) get() rune {
-	ch := p.peek()
-	p.pos++
-	return ch
-}
-
-func (p *parser) parseExpression() (*ASTNode, error) {
-	node, err := p.parseTerm()
+	p := &parser{input: expr}
+	node, err := p.parseExpression()
 	if err != nil {
 		return nil, err
 	}
-	for {
-		ch := p.peek()
-		if ch == '+' || ch == '-' {
-			op := string(p.get())
-			right, err := p.parseTerm()
-			if err != nil {
-				return nil, err
-			}
-			node = &ASTNode{
-				IsLeaf:   false,
-				Operator: op,
-				Left:     node,
-				Right:    right,
-			}
-		} else {
-			break
-		}
+	if p.pos < len(p.input) {
+		return nil, fmt.Errorf("неизвестный символ на позиции %d", p.pos)
 	}
 	return node, nil
 }
 
+func (p *parser) parseExpression() (*ASTNode, error) {
+	return p.parseBinaryOp(p.parseTerm, []string{"+", "-"})
+}
+
 func (p *parser) parseTerm() (*ASTNode, error) {
-	node, err := p.parseFactor()
+	return p.parseBinaryOp(p.parseFactor, []string{"*", "/"})
+}
+
+func (p *parser) parseBinaryOp(next func() (*ASTNode, error), ops []string) (*ASTNode, error) {
+	node, err := next()
 	if err != nil {
 		return nil, err
 	}
+
 	for {
-		ch := p.peek()
-		if ch == '*' || ch == '/' {
-			op := string(p.get())
-			right, err := p.parseFactor()
-			if err != nil {
-				return nil, err
-			}
-			node = &ASTNode{
-				IsLeaf:   false,
-				Operator: op,
-				Left:     node,
-				Right:    right,
-			}
-		} else {
+		op := p.peekString(ops)
+		if op == "" {
 			break
 		}
+		p.pos++
+
+		right, err := next()
+		if err != nil {
+			return nil, err
+		}
+		node = &ASTNode{Operator: op, Left: node, Right: right}
 	}
 	return node, nil
 }
 
 func (p *parser) parseFactor() (*ASTNode, error) {
-	ch := p.peek()
-	if ch == '(' {
-		p.get()
+	if p.peek() == '(' {
+		p.pos++
 		node, err := p.parseExpression()
-		if err != nil {
-			return nil, err
+		if err != nil || p.peek() != ')' {
+			return nil, fmt.Errorf("незакрытая скобка")
 		}
-		if p.peek() != ')' {
-			return nil, fmt.Errorf("blablabla")
-		}
-		p.get()
+		p.pos++
 		return node, nil
 	}
+
 	start := p.pos
-	if ch == '+' || ch == '-' {
-		p.get()
+	if p.peek() == '+' || p.peek() == '-' {
+		p.pos++
 	}
-	for {
-		ch = p.peek()
-		if unicode.IsDigit(ch) || ch == '.' {
-			p.get()
-		} else {
-			break
+	for p.pos < len(p.input) && (unicode.IsDigit(rune(p.input[p.pos])) || p.input[p.pos] == '.') {
+		p.pos++
+	}
+
+	numStr := p.input[start:p.pos]
+	if numStr == "" {
+		return nil, fmt.Errorf("ожидается число")
+	}
+
+	value, err := strconv.ParseFloat(numStr, 64)
+	if err != nil {
+		return nil, fmt.Errorf("невалидное число: %s", numStr)
+	}
+	return &ASTNode{IsLeaf: true, Value: value}, nil
+}
+
+func (p *parser) peek() byte {
+	if p.pos >= len(p.input) {
+		return 0
+	}
+	return p.input[p.pos]
+}
+
+func (p *parser) peekString(ops []string) string {
+	if p.pos >= len(p.input) {
+		return ""
+	}
+	for _, op := range ops {
+		if string(p.input[p.pos]) == op {
+			return op
 		}
 	}
-	token := p.input[start:p.pos]
-	if token == "" {
-		return nil, fmt.Errorf("ожидалось иное число ", start)
-	}
-	value, err := strconv.ParseFloat(token, 64)
-	if err != nil {
-		return nil, fmt.Errorf("Невалидные данные ", token)
-	}
-	return &ASTNode{
-		IsLeaf: true,
-		Value:  value,
-	}, nil
+	return ""
 }
