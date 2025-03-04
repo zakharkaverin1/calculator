@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fourth/internal/application"
 	"log"
+
+	"github.com/zakharkaverin1/calculator/internal/application"
 )
 
 func main() {
