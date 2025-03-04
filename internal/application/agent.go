@@ -3,12 +3,13 @@ package application
 import (
 	"bytes"
 	"encoding/json"
-	"fourth/pkg/calculation"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/zakharkaverin1/calculator/pkg/calculation"
 )
 
 type Response struct {
