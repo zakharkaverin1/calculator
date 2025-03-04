@@ -1,0 +1,4 @@
+github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
+github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
+github.com/zakharkaverin1/http_calc_go v0.0.0-20241223192305-13eac23e158a h1:Oibg1QdBWL/Lnp6eRulwSJ6iOGQLzd47ZZMCLcMi/rY=
+github.com/zakharkaverin1/http_calc_go v0.0.0-20241223192305-13eac23e158a/go.mod h1:xCdU6PEv4IHUFkMpowlH98v7axV+9NHRy61m8TqK+Yk=
