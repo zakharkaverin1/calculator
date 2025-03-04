@@ -105,7 +105,7 @@ func Valid(e string) bool {
 	return true
 }
 
-func (o *Orchestrator) createHandler(w http.ResponseWriter, r *http.Request) {
+func (o *Orchestrator) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	req := new(Request)
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -339,7 +339,7 @@ func (o *Orchestrator) expressionIDHandler(w http.ResponseWriter, r *http.Reques
 }
 
 func (o *Orchestrator) Run() error {
-	http.HandleFunc("/api/v1/calculate", o.createHandler)
+	http.HandleFunc("/api/v1/calculate", o.CreateHandler)
 	http.HandleFunc("/api/v1/expressions", o.expressionsHandler)
 	http.HandleFunc("/internal/task", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
