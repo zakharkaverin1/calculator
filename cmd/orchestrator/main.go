@@ -1,6 +1,7 @@
 package main
 
-import "fourth/internal/application"
+import 	"github.com/zakharkaverin1/calculator/internal/application"
+
 
 func main() {
 	app := application.NewOrchestrator()
