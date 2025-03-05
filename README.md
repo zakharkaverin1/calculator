@@ -10,22 +10,22 @@
 ### Шаг 1: Клонировать репозиторий
 Вводим в консоль данную команду
 ```bash
-  git clone https://github.com/zakharkaverin1/calculator
+git clone https://github.com/zakharkaverin1/calculator
 ```
 
 ### Шаг 2
 ```bash
-  cd calculator
+cd calculator
 ```
 
 ### Шаг 3: Установка зависимостей 
 ```bash
-  go mod download
+go mod download
 ```
 
 ### Шаг 4: Запускаем оркестратор
 ```bash
-  go run .\cmd\orchestrator\main.go
+go run .\cmd\orchestrator\main.go
 ```
 
 ### Шаг 5: Открываем вторую консоль
@@ -33,10 +33,10 @@
 
 ### Шаг 6: 
 ```bash
-  cd calculator
+cd calculator
 ```
 
-### Шаг 4: Запускаем агента
+### Шаг 7: Запускаем агента
 ```bash
-  go run .\cmd\agent\main.go
+go run .\cmd\agent\main.go
 ```
