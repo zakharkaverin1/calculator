@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/1efbf6ca-9f43-4468-8e9f-d38c20242588)# Параллельный калькулятор на GO
+# Параллельный калькулятор на GO
 
 # Описание
 Данный проект представляет из себя систему, вычисляющую сложные арифметичсекие выражения. Состоит из оркестратора и агентов, выполняющих роль вычислителей.
@@ -29,8 +29,7 @@
 ```
 
 ### Шаг 5: Открываем вторую консоль
-![image](https://github.com/user-attachments/assets/fd53ef69-7b50-461b-96ea-48cba43a7bb7)
-
+![image](https://github.com/user-attachments/assets/e54daca0-b395-4f3c-ae91-5da4ee645ecf)
 
 ### Шаг 6: 
 ```bash
