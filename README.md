@@ -66,3 +66,213 @@ go run .\cmd\agent\main.go
 ---
 
 # API Эндпоинты
+Чтобы текст красиво отображался на GitHub, используем Markdown-разметку. Вот обновлённая версия раздела `README` с улучшенным форматированием:
+
+---
+
+## API Endpoints
+
+### 1. Создание нового выражения для вычисления
+
+**Запрос:**
+- **Метод:** `POST`
+- **URL:** `/api/v1/calculate`
+- **Тело запроса:** JSON с полем `expression`, содержащим математическое выражение.
+
+**Пример запроса с `curl`:**
+```bash
+curl -X POST http://localhost:8080/api/v1/calculate \
+-H "Content-Type: application/json" \
+-d '{"expression": "2 + 2 * 2"}'
+```
+
+**Ответ:**
+- **Статус:** `201 Created`
+- **Тело ответа:** JSON с полем `id`, содержащим идентификатор созданного выражения.
+
+```json
+{
+  "id": 1
+}
+```
+
+---
+
+### 2. Получение списка всех выражений
+
+**Запрос:**
+- **Метод:** `GET`
+- **URL:** `/api/v1/expressions`
+
+**Пример запроса с `curl`:**
+```bash
+curl -X GET http://localhost:8080/api/v1/expressions
+```
+
+**Ответ:**
+- **Статус:** `200 OK`
+- **Тело ответа:** JSON с массивом выражений, каждое из которых содержит `id`, `expression`, `status`, и `result`.
+
+```json
+{
+  "expressions": [
+    {
+      "id": 1,
+      "expression": "2 + 2 * 2",
+      "status": "completed",
+      "result": 6
+    },
+    {
+      "id": 2,
+      "expression": "3 * (4 - 2)",
+      "status": "cooking",
+      "result": 0
+    }
+  ]
+}
+```
+
+---
+
+### 3. Получение выражения по ID
+
+**Запрос:**
+- **Метод:** `GET`
+- **URL:** `/api/v1/expressions/{id}`
+
+**Пример запроса с `curl`:**
+```bash
+curl -X GET http://localhost:8080/api/v1/expressions/1
+```
+
+**Ответ:**
+- **Статус:** `200 OK`
+- **Тело ответа:** JSON с информацией о выражении.
+
+```json
+{
+  "expression": {
+    "id": 1,
+    "expression": "2 + 2 * 2",
+    "status": "completed",
+    "result": 6
+  }
+}
+```
+
+---
+
+### 4. Получение задачи для вычисления (внутренний эндпоинт)
+
+**Запрос:**
+- **Метод:** `GET`
+- **URL:** `/internal/task`
+
+**Пример запроса с `curl`:**
+```bash
+curl -X GET http://localhost:8080/internal/task
+```
+
+**Ответ:**
+- **Статус:** `200 OK`
+- **Тело ответа:** JSON с информацией о задаче.
+
+```json
+{
+  "task": {
+    "id": "1",
+    "arg1": 2,
+    "arg2": 2,
+    "operation": "*",
+    "operation_time": 1000
+  }
+}
+```
+
+---
+
+### 5. Отправка результата вычисления задачи (внутренний эндпоинт)
+
+**Запрос:**
+- **Метод:** `POST`
+- **URL:** `/internal/task`
+- **Тело запроса:** JSON с полями `id` (идентификатор задачи) и `res` (результат вычисления).
+
+**Пример запроса с `curl`:**
+```bash
+curl -X POST http://localhost:8080/internal/task \
+-H "Content-Type: application/json" \
+-d '{"id": 1, "res": 4}'
+```
+
+**Ответ:**
+- **Статус:** `200 OK`
+- **Тело ответа:** JSON с подтверждением принятия результата.
+
+```json
+{
+  "status": "резльтат принят"
+}
+```
+
+---
+
+### 6. Пример работы с API
+
+1. **Создание выражения:**
+   ```bash
+   curl -X POST http://localhost:8080/api/v1/calculate \
+   -H "Content-Type: application/json" \
+   -d '{"expression": "3 * (4 - 2)"}'
+   ```
+
+   **Ответ:**
+   ```json
+   {
+     "id": 2
+   }
+   ```
+
+2. **Получение списка выражений:**
+   ```bash
+   curl -X GET http://localhost:8080/api/v1/expressions
+   ```
+
+   **Ответ:**
+   ```json
+   {
+     "expressions": [
+       {
+         "id": 1,
+         "expression": "2 + 2 * 2",
+         "status": "completed",
+         "result": 6
+       },
+       {
+         "id": 2,
+         "expression": "3 * (4 - 2)",
+         "status": "cooking",
+         "result": 0
+       }
+     ]
+   }
+   ```
+
+3. **Получение выражения по ID:**
+   ```bash
+   curl -X GET http://localhost:8080/api/v1/expressions/2
+   ```
+
+   **Ответ:**
+   ```json
+   {
+     "expression": {
+       "id": 2,
+       "expression": "3 * (4 - 2)",
+       "status": "cooking",
+       "result": 0
+     }
+   }
+   ```
+
+---
