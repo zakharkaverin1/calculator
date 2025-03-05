@@ -40,3 +40,5 @@ cd calculator
 ```bash
 go run .\cmd\agent\main.go
 ```
+
+node3([Форма 3])
